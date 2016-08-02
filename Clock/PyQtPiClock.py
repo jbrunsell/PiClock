@@ -19,82 +19,84 @@ import re
 import ApiKeys
 
 #def main():
-def tick():
+def tick(): 
+"""function that translates the time into clock hand orientation, 
+	generates the position of each hand accordingly and  """
     global hourpixmap, minpixmap, secpixmap
     global hourpixmap2, minpixmap2, secpixmap2
     global lastmin
     global clockrect
     global datex, datex2, datey2
     
-    now = datetime.datetime.now()
-    angle = now.second * 6
-    ts = secpixmap.size()
+    now = datetime.datetime.now() #pulls current time into now
+    angle = now.second * 6 #calculates angle of seconds hand (60 seconds into 360 deg)
+    ts = secpixmap.size() #secpixmap is a QtGui.QPixmap pulled from Config of seconds hand
     secpixmap2 = secpixmap.transformed(
-        QtGui.QMatrix().scale(
-                float(clockrect.width())/ts.height(),
-                float(clockrect.height())/ts.height()
-                ).rotate(angle),
-            Qt.SmoothTransformation
+        QtGui.QMatrix().scale( # scale and manipulate seconds hand
+                float(clockrect.width())/ts.height(), # scale to screen width vs image
+                float(clockrect.height())/ts.height() # scale to screen height vs image
+                ).rotate(angle), # rotate to proper angle based on seconds
+            Qt.SmoothTransformation # assume this is doing some anti-aliasing
         )
-    sechand.setPixmap(secpixmap2)
-    ts = secpixmap2.size()
+    sechand.setPixmap(secpixmap2) #setting sechand pixmap to the rotated image
+    ts = secpixmap2.size() #calcuating size of rotated image
     sechand.setGeometry(
-        clockrect.center().x()-ts.width()/2,
-        clockrect.center().y()-ts.height()/2,
-        ts.width(),
-        ts.height()
+        clockrect.center().x()-ts.width()/2, #locate center of clockrect and center second hand horizontally
+        clockrect.center().y()-ts.height()/2, #locate center of clockrect and center second hand vertically
+        ts.width(), # use full width of scaled image
+        ts.height() # use full height of scaled image
     )
     if now.minute != lastmin:
-        lastmin = now.minute
-        angle = now.minute * 6
-        ts = minpixmap.size()
+        lastmin = now.minute # calculates minute of now
+        angle = now.minute * 6 # calculates angle on 360 degrees
+        ts = minpixmap.size() #minpixmap is a QtGui.QPixmap pulled from Config of minutes hand
         minpixmap2 = minpixmap.transformed(
-                QtGui.QMatrix().scale(
-                    float(clockrect.width())/ts.height(),
-                    float(clockrect.height())/ts.height()
-                    ).rotate(angle),
-                Qt.SmoothTransformation
+                QtGui.QMatrix().scale( # scale and manipulate minutes hand
+                    float(clockrect.width())/ts.height(), # scale to screen width vs image
+                    float(clockrect.height())/ts.height() # scale to screen height vs image
+                    ).rotate(angle), # rotate to proper angle based on minutes
+                Qt.SmoothTransformation # assume this is doing some anti-aliasing
             )
-        minhand.setPixmap(minpixmap2)
-        ts = minpixmap2.size()
+        minhand.setPixmap(minpixmap2) #setting minhand pixmap to the rotated image
+        ts = minpixmap2.size() #calcuating size of rotated image
         minhand.setGeometry(
-            clockrect.center().x()-ts.width()/2,
-            clockrect.center().y()-ts.height()/2,
-            ts.width(),
-            ts.height()
+            clockrect.center().x()-ts.width()/2, #locate center of clockrect and center minute hand horizontally
+            clockrect.center().y()-ts.height()/2, #locate center of clockrect and center second hand vertically
+            ts.width(), # use full width of scaled image
+            ts.height() # use full height of scaled image
         )
         
-        angle = ((now.hour % 12) + now.minute / 60.0) * 30.0
-        ts = hourpixmap.size()
+        angle = ((now.hour % 12) + now.minute / 60.0) * 30.0 #calculates hours hand position based on hour and minutes
+        ts = hourpixmap.size() #hourpixmap is a QtGui.QPixmap pulled from Config of hours hand
         hourpixmap2 = hourpixmap.transformed(
-                QtGui.QMatrix().scale(
-                    float(clockrect.width())/ts.height(),
-                    float(clockrect.height())/ts.height()
-                    ).rotate(angle),
-                Qt.SmoothTransformation
+                QtGui.QMatrix().scale( # scale and manipulate minutes hand
+                    float(clockrect.width())/ts.height(), # scale to screen width vs image
+                    float(clockrect.height())/ts.height() # scale to screen height vs image
+                    ).rotate(angle), # rotate to proper angle based on hours minutes
+                Qt.SmoothTransformation # assume this is doing some anti-aliasing
             )
-        hourhand.setPixmap(hourpixmap2)
-        ts = hourpixmap2.size()
+        hourhand.setPixmap(hourpixmap2) #setting hourhand pixmap to the rotated image
+        ts = hourpixmap2.size() #calcuating size of rotated image
         hourhand.setGeometry(
-            clockrect.center().x()-ts.width()/2,
-            clockrect.center().y()-ts.height()/2,
-            ts.width(),
-            ts.height()
+            clockrect.center().x()-ts.width()/2, #locate center of clockrect and center hour hand horizontally
+            clockrect.center().y()-ts.height()/2, #locate center of clockrect and center hour hand vertically
+            ts.width(), # use full width of scaled image
+            ts.height() # use full height of scaled image
         )
-        # date
+        # calculating suffix of date
         sup = 'th'
         if (now.day == 1 or now.day == 21 or now.day == 31): sup = 'st'
         if (now.day == 2 or now.day == 22): sup = 'nd'
         if (now.day == 3 or now.day == 23): sup = 'rd'
-        if Config.DateLocale != "":
+        if Config.DateLocale != "": #checks to see if Config has any locale info
             sup = ""
             try:
-                locale.setlocale(locale.LC_TIME, Config.DateLocale)
+                locale.setlocale(locale.LC_TIME, Config.DateLocale) #setting locale info per Config
             except:
                 pass 
         ds = "{0:%A %B} {0.day}<sup>".format(now)+sup+"</sup> {0.year}".format(now)
-        datex.setText(ds)
-        datex2.setText(ds)
+        datex.setText(ds) #set date text into frame1 label 
+        datex2.setText(ds) #set date text into frame2 label 
         datey2.setText("{0:%I:%M %p}".format(now))
  
 
@@ -127,7 +129,7 @@ def gettemp():
     r = QUrl('http://'+host+':48213/temp')
     r = QNetworkRequest(r)
     tempreply = manager.get(r)
-    tempreply.finished.connect(tempfinished)
+    tempreply.finished.connect(tempfinished) #calls tempfinished when communication complete
 
     
 def wxfinished():
@@ -248,14 +250,14 @@ def getwx():
     global wxurl
     global wxreply
     print "getting current and forecast:"+time.ctime()
-    wxurl = Config.wuprefix + ApiKeys.wuapi + '/conditions/astronomy/hourly10day/forecast10day/lang:'+Config.wuLanguage+'/q/' 
-    wxurl += str(Config.wulocation.lat)+','+str(Config.wulocation.lng)+'.json' 
-    wxurl += '?r=' + str(random.random())
-    print wxurl
-    r = QUrl(wxurl)
-    r = QNetworkRequest(r)
-    wxreply = manager.get(r)
-    wxreply.finished.connect(wxfinished)    
+    wxurl = Config.wuprefix + ApiKeys.wuapi + '/conditions/astronomy/hourly10day/forecast10day/lang:'+Config.wuLanguage+'/q/' # building WU API call prefix, language, and user's WU api key from Config and ApiKeys, respectively. 
+    wxurl += str(Config.wulocation.lat)+','+str(Config.wulocation.lng)+'.json'  # adding on location latitude and longitude
+    wxurl += '?r=' + str(random.random()) # I'm not sure why we're tacking on a random stream at the end. I don't see the need in the API, but it could be helpful in troubleshooting and seeing separate calls
+    print wxurl # print to output file as troubleshooting?
+    r = QUrl(wxurl) #creating url string as instance of QUrl 
+    r = QNetworkRequest(r) #creating the Network request as instance of QNetworkRequest
+    wxreply = manager.get(r) #performing the request and returning the reply to wxreply
+    wxreply.finished.connect(wxfinished) #calls wxfinished when communication complete
 
 def getallwx():
     getwx()
@@ -293,7 +295,7 @@ def qtstart():
     
 
 class Radar(QtGui.QLabel):
-
+""" creates radar movies (animate from WeatherUnderground's API"""
     def __init__(self, parent, radar, rect, myname):
         global xscale, yscale
         self.myname = myname
@@ -503,7 +505,7 @@ class Radar(QtGui.QLabel):
 def realquit():    
     QtGui.QApplication.exit(0)
         
-def myquit(a=0,b=0):
+def myquit(a=0,b=0): #called by a SIGINT - shuts down the objects, then calls the QT app to quit after 30 msec
     global objradar1, objradar2,objradar3,objradar4
     global ctimer, wtimer,temptimer
     
@@ -518,6 +520,7 @@ def myquit(a=0,b=0):
     QtCore.QTimer.singleShot(30, realquit)
 
 def fixupframe(frame,onoff):
+""" runs through all the widgets children and tells radar movies to start or stop"""
     for child in frame.children():
         if isinstance(child,Radar):
             if onoff:
@@ -528,51 +531,52 @@ def fixupframe(frame,onoff):
                 child.wxstop()
         
 def nextframe(plusminus):
-    global frames, framep
-    frames[framep].setVisible(False)
-    fixupframe(frames[framep],False)
-    framep += plusminus
-    if framep >= len(frames): framep = 0
-    if framep < 0: framep = len(frames) - 1
-    frames[framep].setVisible(True)
-    fixupframe(frames[framep],True)
+    global frames, framep 
+"""frames and framep are defined elsewhere; framep is present widget (1 is clock weather radar and 2 is radar dual display)"""
+    frames[framep].setVisible(False) #set current widget to hidden
+    fixupframe(frames[framep],False) #tells current widget movies to stop
+    framep += plusminus #increments current widget index per input
+    if framep >= len(frames): framep = 0 #resets widget index to 0 if it overruns # of frames
+    if framep < 0: framep = len(frames) - 1 #resets widget index to last if it underruns zero
+    frames[framep].setVisible(True) #turns new widget on
+    fixupframe(frames[framep],True) #turns on movies within new widget
 
 class myMain(QtGui.QWidget):
     def keyPressEvent(self, event):
         global weatherplayer, lastkeytime
         if type(event) == QtGui.QKeyEvent:
 #            print event.key(), format(event.key(), '08x')
-            if event.key() == Qt.Key_F4: myquit()
-            if event.key() == Qt.Key_F2:
-                if time.time() > lastkeytime:
-                    if weatherplayer == None:
-                        weatherplayer = Popen(["mpg123","-q",  Config.noaastream ])
+            if event.key() == Qt.Key_F4: myquit() # user hits F4 to quit the app
+            if event.key() == Qt.Key_F2: # user hits F2 to start the NOAA stream
+                if time.time() > lastkeytime: #check time has passed since last keystroke
+                    if weatherplayer == None: # check for active weatherplayer
+                        weatherplayer = Popen(["mpg123","-q",  Config.noaastream ]) # start weatherplayer if not active
                     else:
-                        weatherplayer.kill()
-                        weatherplayer = None
-                lastkeytime = time.time() + 2
-            if event.key() == Qt.Key_Space:
+                        weatherplayer.kill() #stop weatherplayer if running
+                        weatherplayer = None #clear weatherplayer
+                lastkeytime = time.time() + 2 # lastkey adds two seconds to give time for stream to start
+            if event.key() == Qt.Key_Space: # space goes to next frame
                 nextframe(1)
-            if event.key() == Qt.Key_Left:
+            if event.key() == Qt.Key_Left: # left key goes to previous frame
                 nextframe(-1)
-            if event.key() == Qt.Key_Right:
+            if event.key() == Qt.Key_Right: # right key goes to next frame 
                 nextframe(1)
                 
 
-configname = 'Config'
+configname = 'Config' #default Config name is 'Config'
 
-if len(sys.argv) > 1: 
-    configname = sys.argv[1]
+if len(sys.argv) > 1: #checks to make sure that it was passed two arguments, second is config file name
+    configname = sys.argv[1] # retrieves second argument for which config file
 
-if not os.path.isfile(configname+".py"):
+if not os.path.isfile(configname+".py"): #confirms passed config file exists
     print "Config file not found %s" % configname+".py"
     exit(1)
       
-Config = __import__(configname)
+Config = __import__(configname) #reads config file as module and imports it
 
 # define default values for new/optional config variables.
 
-try: Config.metric
+try: Config.metric 
 except AttributeError: Config.metric = 0
 
 try: Config.weather_refresh
@@ -622,42 +626,42 @@ weatherplayer = None
 lastkeytime = 0;
 lastapiget = time.time()
 
-app = QtGui.QApplication(sys.argv)
-desktop = app.desktop()
-rec = desktop.screenGeometry()
-height = rec.height()
-width = rec.width()
+app = QtGui.QApplication(sys.argv) #defines "app" as the QT Application
+desktop = app.desktop() #pulls which desktop the application is on
+rec = desktop.screenGeometry() #pulls the screen geometry of the desktop 
+height = rec.height() #height is the desktop height
+width = rec.width() #width is the desktop width
 
-signal.signal(signal.SIGINT, myquit)
+signal.signal(signal.SIGINT, myquit) #catches a SIGINT and calls myquit
 
-w = myMain()
-w.setWindowTitle(os.path.basename(__file__))
+w = myMain() #w is set as an instance of the main window class
+w.setWindowTitle(os.path.basename(__file__)) 
 
-w.setStyleSheet("QWidget { background-color: black;}")  
+w.setStyleSheet("QWidget { background-color: black;}")  #sets main window background to black
 
 #fullbgpixmap = QtGui.QPixmap(Config.background)
 #fullbgrect = fullbgpixmap.rect()
 #xscale = float(width)/fullbgpixmap.width()
 #yscale = float(height)/fullbgpixmap.height()
 
-xscale = float(width)/1440.0
-yscale = float(height)/900.0
+xscale = float(width)/1440.0 # calculates a scale of the window width relative to 1440 pixels
+yscale = float(height)/900.0 # calculates a scale of the window height relative to 900 pixels
 
-frames = []
-framep = 0
+frames = [] #initializes frames: list of Qframe widgets or pages
+framep = 0 #initializes framep: present Qframe widget or page
 
-frame1 = QtGui.QFrame(w)
-frame1.setObjectName("frame1")
-frame1.setGeometry(0,0,width,height)
+frame1 = QtGui.QFrame(w) #creates frame1 as a QFrame instance of w; this will be default page with clock, radar, and forecasts
+frame1.setObjectName("frame1") #sets frame1 name as same
+frame1.setGeometry(0,0,width,height) #anchors frame1 in top left corner
 frame1.setStyleSheet("#frame1 { background-color: black; border-image: url("+Config.background+") 0 0 0 0 stretch stretch;}")
-frames.append(frame1)
+frames.append(frame1) #adds frame1 to frames list
 
-frame2 = QtGui.QFrame(w)
-frame2.setObjectName("frame2")
-frame2.setGeometry(0,0,width,height)
+frame2 = QtGui.QFrame(w) #creates frame2 as a QFrame instance of w; this will be larger radars
+frame2.setObjectName("frame2") #sets frame2 name as same
+frame2.setGeometry(0,0,width,height) #anchors frame2 in top left corner
 frame2.setStyleSheet("#frame2 { background-color: blue; border-image: url("+Config.background+") 0 0 0 0 stretch stretch;}")
-frame2.setVisible(False)
-frames.append(frame2)
+frame2.setVisible(False) #sets frame2 to not visible
+frames.append(frame2) #adds frame1 to frames list
 
 #frame3 = QtGui.QFrame(w)
 #frame3.setObjectName("frame3")
@@ -666,43 +670,43 @@ frames.append(frame2)
 #frame3.setVisible(False)
 #frames.append(frame3)
 
-squares1 = QtGui.QFrame(frame1)
+squares1 = QtGui.QFrame(frame1) #creates colored frame around radars on frame 1
 squares1.setObjectName("squares1")
 squares1.setGeometry(0,height-yscale*600,xscale*340,yscale*600)
 squares1.setStyleSheet("#squares1 { background-color: transparent; border-image: url("+Config.squares1+") 0 0 0 0 stretch stretch;}")
 
-squares2 = QtGui.QFrame(frame1)
+squares2 = QtGui.QFrame(frame1) #creates colored frame around forecasts on frame 1
 squares2.setObjectName("squares2")
 squares2.setGeometry(width-xscale*340,0,xscale*340,yscale*900)
 squares2.setStyleSheet("#squares2 { background-color: transparent; border-image: url("+Config.squares2+") 0 0 0 0 stretch stretch;}")
-
-clockface = QtGui.QFrame(frame1)
+"""
+clockface = QtGui.QFrame(frame1) #creates clock face
 clockface.setObjectName("clockface")
 clockrect = QtCore.QRect(width/2-height*.4, height*.45-height*.4,height * .8, height * .8)
 clockface.setGeometry(clockrect)
 clockface.setStyleSheet("#clockface { background-color: transparent; border-image: url("+Config.clockface+") 0 0 0 0 stretch stretch;}")
 
-hourhand = QtGui.QLabel(frame1)
+hourhand = QtGui.QLabel(frame1) #create frame within which the hour hand will move
 hourhand.setObjectName("hourhand")
 hourhand.setStyleSheet("#hourhand { background-color: transparent; }")
 
-minhand = QtGui.QLabel(frame1)
+minhand = QtGui.QLabel(frame1) #create frame within which the minute hand will move
 minhand.setObjectName("minhand")
 minhand.setStyleSheet("#minhand { background-color: transparent; }")
 
-sechand = QtGui.QLabel(frame1)
+sechand = QtGui.QLabel(frame1) #create frame within which the second hand will move
 sechand.setObjectName("sechand")
 sechand.setStyleSheet("#sechand { background-color: transparent; }")
 
-hourpixmap = QtGui.QPixmap(Config.hourhand)
-hourpixmap2 = QtGui.QPixmap(Config.hourhand)
-minpixmap = QtGui.QPixmap(Config.minhand)
-minpixmap2 = QtGui.QPixmap(Config.minhand)
-secpixmap = QtGui.QPixmap(Config.sechand)
-secpixmap2 = QtGui.QPixmap(Config.sechand)
-
-radar1rect = QtCore.QRect(3*xscale, 344*yscale, 300*xscale, 275*yscale)
-objradar1 = Radar(frame1, Config.radar1, radar1rect, "radar1")
+hourpixmap = QtGui.QPixmap(Config.hourhand) #pulls in hour hand pixmap
+hourpixmap2 = QtGui.QPixmap(Config.hourhand) #pulls in hour hand pixmap
+minpixmap = QtGui.QPixmap(Config.minhand) #pulls in minute hand pixmap
+minpixmap2 = QtGui.QPixmap(Config.minhand) #pulls in minute hand pixmap
+secpixmap = QtGui.QPixmap(Config.sechand) #pulls in second hand pixmap
+secpixmap2 = QtGui.QPixmap(Config.sechand) #pulls in second hand pixmap
+"""
+radar1rect = QtCore.QRect(3*xscale, 344*yscale, 300*xscale, 275*yscale) #create rectangle that will call Radar() function and pull the movie
+objradar1 = Radar(frame1, Config.radar1, radar1rect, "radar1") #creates objradar1 as instance of Radar()
 
 radar2rect = QtCore.QRect(3*xscale, 622*yscale, 300*xscale, 275*yscale)
 objradar2 = Radar(frame1, Config.radar2, radar2rect, "radar2")
@@ -712,7 +716,6 @@ objradar3 = Radar(frame2, Config.radar3, radar3rect, "radar3")
 
 radar4rect = QtCore.QRect(726*xscale, 50*yscale, 700*xscale, 700*yscale)
 objradar4 = Radar(frame2, Config.radar4, radar4rect, "radar4")
-
 
 datex = QtGui.QLabel(frame1)
 datex.setObjectName("datex")
@@ -817,7 +820,7 @@ temp.setGeometry(0,height-100,width,50)
 
 
 forecast = []
-for i in range(0,9):
+for i in range(0,5):
     lab = QtGui.QLabel(frame1)
     lab.setObjectName("forecast"+str(i))
     lab.setStyleSheet("QWidget { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px; "+Config.fontattr+"}")
