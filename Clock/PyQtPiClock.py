@@ -20,8 +20,8 @@ import ApiKeys
 
 #def main():
 def tick(): 
-"""function that translates the time into clock hand orientation, 
-	generates the position of each hand accordingly and  """
+	#function that translates the time into clock hand orientation, 
+	#generates the position of each hand accordingly
     global hourpixmap, minpixmap, secpixmap
     global hourpixmap2, minpixmap2, secpixmap2
     global lastmin
@@ -274,16 +274,16 @@ def qtstart():
     
     gettemp()
 
-    objradar1.start(Config.radar_refresh*60)
-    objradar1.wxstart()
-    objradar2.start(Config.radar_refresh*60)
-    objradar2.wxstart()
+    #objradar1.start(Config.radar_refresh*60)
+    #objradar1.wxstart()
+    #objradar2.start(Config.radar_refresh*60)
+    #objradar2.wxstart()
     objradar3.start(Config.radar_refresh*60)
     objradar4.start(Config.radar_refresh*60)
     
-    ctimer = QtCore.QTimer()
-    ctimer.timeout.connect(tick)
-    ctimer.start(1000)
+    # ctimer = QtCore.QTimer()
+    # ctimer.timeout.connect(tick)
+    # ctimer.start(1000)
     
     wxtimer = QtCore.QTimer()
     wxtimer.timeout.connect(getallwx)
@@ -295,7 +295,7 @@ def qtstart():
     
 
 class Radar(QtGui.QLabel):
-""" creates radar movies (animate from WeatherUnderground's API"""
+# creates radar movies (animate from WeatherUnderground's API
     def __init__(self, parent, radar, rect, myname):
         global xscale, yscale
         self.myname = myname
@@ -509,18 +509,18 @@ def myquit(a=0,b=0): #called by a SIGINT - shuts down the objects, then calls th
     global objradar1, objradar2,objradar3,objradar4
     global ctimer, wtimer,temptimer
     
-    objradar1.stop()
-    objradar2.stop()
+    #objradar1.stop()
+    #objradar2.stop()
     objradar3.stop()
     objradar4.stop()    
-    ctimer.stop()
+    #ctimer.stop()
     wxtimer.stop()
     temptimer.stop()
     
     QtCore.QTimer.singleShot(30, realquit)
 
 def fixupframe(frame,onoff):
-""" runs through all the widgets children and tells radar movies to start or stop"""
+# runs through all the widgets children and tells radar movies to start or stop
     for child in frame.children():
         if isinstance(child,Radar):
             if onoff:
@@ -532,7 +532,7 @@ def fixupframe(frame,onoff):
         
 def nextframe(plusminus):
     global frames, framep 
-"""frames and framep are defined elsewhere; framep is present widget (1 is clock weather radar and 2 is radar dual display)"""
+# frames and framep are defined elsewhere; framep is present widget (1 is clock weather radar and 2 is radar dual display)
     frames[framep].setVisible(False) #set current widget to hidden
     fixupframe(frames[framep],False) #tells current widget movies to stop
     framep += plusminus #increments current widget index per input
@@ -647,6 +647,8 @@ w.setStyleSheet("QWidget { background-color: black;}")  #sets main window backgr
 xscale = float(width)/1440.0 # calculates a scale of the window width relative to 1440 pixels
 yscale = float(height)/900.0 # calculates a scale of the window height relative to 900 pixels
 
+print(xscale,yscale,width,height)
+
 frames = [] #initializes frames: list of Qframe widgets or pages
 framep = 0 #initializes framep: present Qframe widget or page
 
@@ -670,46 +672,46 @@ frames.append(frame2) #adds frame1 to frames list
 #frame3.setVisible(False)
 #frames.append(frame3)
 
-squares1 = QtGui.QFrame(frame1) #creates colored frame around radars on frame 1
-squares1.setObjectName("squares1")
-squares1.setGeometry(0,height-yscale*600,xscale*340,yscale*600)
-squares1.setStyleSheet("#squares1 { background-color: transparent; border-image: url("+Config.squares1+") 0 0 0 0 stretch stretch;}")
+# squares1 = QtGui.QFrame(frame1) #creates colored frame around radars on frame 1
+# squares1.setObjectName("squares1")
+# squares1.setGeometry(0,height-yscale*600,xscale*340,yscale*600)
+# squares1.setStyleSheet("#squares1 { background-color: transparent; border-image: url("+Config.squares1+") 0 0 0 0 stretch stretch;}")
 
-squares2 = QtGui.QFrame(frame1) #creates colored frame around forecasts on frame 1
-squares2.setObjectName("squares2")
-squares2.setGeometry(width-xscale*340,0,xscale*340,yscale*900)
-squares2.setStyleSheet("#squares2 { background-color: transparent; border-image: url("+Config.squares2+") 0 0 0 0 stretch stretch;}")
-"""
-clockface = QtGui.QFrame(frame1) #creates clock face
-clockface.setObjectName("clockface")
-clockrect = QtCore.QRect(width/2-height*.4, height*.45-height*.4,height * .8, height * .8)
-clockface.setGeometry(clockrect)
-clockface.setStyleSheet("#clockface { background-color: transparent; border-image: url("+Config.clockface+") 0 0 0 0 stretch stretch;}")
+# squares2 = QtGui.QFrame(frame1) #creates colored frame around forecasts on frame 1
+# squares2.setObjectName("squares2")
+# squares2.setGeometry(width-xscale*340,0,xscale*340,yscale*900)
+# squares2.setStyleSheet("#squares2 { background-color: transparent; border-image: url("+Config.squares2+") 0 0 0 0 stretch stretch;}")
 
-hourhand = QtGui.QLabel(frame1) #create frame within which the hour hand will move
-hourhand.setObjectName("hourhand")
-hourhand.setStyleSheet("#hourhand { background-color: transparent; }")
+# clockface = QtGui.QFrame(frame1) #creates clock face
+# clockface.setObjectName("clockface")
+# clockrect = QtCore.QRect(width/2-height*.4, height*.45-height*.4,height * .8, height * .8)
+# clockface.setGeometry(clockrect)
+# clockface.setStyleSheet("#clockface { background-color: transparent; border-image: url("+Config.clockface+") 0 0 0 0 stretch stretch;}")
 
-minhand = QtGui.QLabel(frame1) #create frame within which the minute hand will move
-minhand.setObjectName("minhand")
-minhand.setStyleSheet("#minhand { background-color: transparent; }")
+# hourhand = QtGui.QLabel(frame1) #create frame within which the hour hand will move
+# hourhand.setObjectName("hourhand")
+# hourhand.setStyleSheet("#hourhand { background-color: transparent; }")
 
-sechand = QtGui.QLabel(frame1) #create frame within which the second hand will move
-sechand.setObjectName("sechand")
-sechand.setStyleSheet("#sechand { background-color: transparent; }")
+# minhand = QtGui.QLabel(frame1) #create frame within which the minute hand will move
+# minhand.setObjectName("minhand")
+# minhand.setStyleSheet("#minhand { background-color: transparent; }")
 
-hourpixmap = QtGui.QPixmap(Config.hourhand) #pulls in hour hand pixmap
-hourpixmap2 = QtGui.QPixmap(Config.hourhand) #pulls in hour hand pixmap
-minpixmap = QtGui.QPixmap(Config.minhand) #pulls in minute hand pixmap
-minpixmap2 = QtGui.QPixmap(Config.minhand) #pulls in minute hand pixmap
-secpixmap = QtGui.QPixmap(Config.sechand) #pulls in second hand pixmap
-secpixmap2 = QtGui.QPixmap(Config.sechand) #pulls in second hand pixmap
-"""
-radar1rect = QtCore.QRect(3*xscale, 344*yscale, 300*xscale, 275*yscale) #create rectangle that will call Radar() function and pull the movie
-objradar1 = Radar(frame1, Config.radar1, radar1rect, "radar1") #creates objradar1 as instance of Radar()
+# sechand = QtGui.QLabel(frame1) #create frame within which the second hand will move
+# sechand.setObjectName("sechand")
+# sechand.setStyleSheet("#sechand { background-color: transparent; }")
 
-radar2rect = QtCore.QRect(3*xscale, 622*yscale, 300*xscale, 275*yscale)
-objradar2 = Radar(frame1, Config.radar2, radar2rect, "radar2")
+# hourpixmap = QtGui.QPixmap(Config.hourhand) #pulls in hour hand pixmap
+# hourpixmap2 = QtGui.QPixmap(Config.hourhand) #pulls in hour hand pixmap
+# minpixmap = QtGui.QPixmap(Config.minhand) #pulls in minute hand pixmap
+# minpixmap2 = QtGui.QPixmap(Config.minhand) #pulls in minute hand pixmap
+# secpixmap = QtGui.QPixmap(Config.sechand) #pulls in second hand pixmap
+# secpixmap2 = QtGui.QPixmap(Config.sechand) #pulls in second hand pixmap
+
+# radar1rect = QtCore.QRect(3*xscale, 3*yscale, 600*xscale, 550*yscale) #create rectangle that will call Radar() function and pull the movie
+# objradar1 = Radar(frame1, Config.radar1, radar1rect, "radar1") #creates objradar1 as instance of Radar()
+
+# radar2rect = QtCore.QRect(3*xscale, 622*yscale, 600*xscale, 550*yscale)
+# objradar2 = Radar(frame1, Config.radar2, radar2rect, "radar2")
 
 radar3rect = QtCore.QRect(13*xscale, 50*yscale, 700*xscale, 700*yscale)
 objradar3 = Radar(frame2, Config.radar3, radar3rect, "radar3")
@@ -717,30 +719,31 @@ objradar3 = Radar(frame2, Config.radar3, radar3rect, "radar3")
 radar4rect = QtCore.QRect(726*xscale, 50*yscale, 700*xscale, 700*yscale)
 objradar4 = Radar(frame2, Config.radar4, radar4rect, "radar4")
 
-datex = QtGui.QLabel(frame1)
+datex = QtGui.QLabel(frame1) # date on frame 1
 datex.setObjectName("datex")
 datex.setStyleSheet("#datex { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px; "+Config.fontattr+"}")
 datex.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 datex.setGeometry(0,0,width,100)
 
-datex2 = QtGui.QLabel(frame2)
+datex2 = QtGui.QLabel(frame2) # date on frame 2
 datex2.setObjectName("datex2")
 datex2.setStyleSheet("#datex2 { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px; "+Config.fontattr+"}")
 datex2.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 datex2.setGeometry(800*xscale,780*yscale,640*xscale,100)
+
 datey2 = QtGui.QLabel(frame2)
 datey2.setObjectName("datey2")
 datey2.setStyleSheet("#datey2 { font-family:sans-serif; color: "+Config.textcolor+"; background-color: transparent; font-size: "+str(int(50*xscale))+"px; "+Config.fontattr+"}")
 datey2.setAlignment(Qt.AlignHCenter | Qt.AlignTop);
 datey2.setGeometry(800*xscale,840*yscale,640*xscale,100)
 
-ypos = -25
-wxicon = QtGui.QLabel(frame1)
+ypos = 25
+wxicon = QtGui.QLabel(frame1) # creating object for current weather icon on frame 1
 wxicon.setObjectName("wxicon")
 wxicon.setStyleSheet("#wxicon { background-color: transparent; }")
-wxicon.setGeometry(75*xscale,ypos*yscale,150*xscale,150*yscale)
+wxicon.setGeometry(10,ypos,376,224)
 
-wxicon2 = QtGui.QLabel(frame2)
+wxicon2 = QtGui.QLabel(frame2) # creating object for current weather icon on frame 2
 wxicon2.setObjectName("wxicon2")
 wxicon2.setStyleSheet("#wxicon2 { background-color: transparent; }")
 wxicon2.setGeometry(0*xscale,750*yscale,150*xscale,150*yscale)
@@ -820,7 +823,7 @@ temp.setGeometry(0,height-100,width,50)
 
 
 forecast = []
-for i in range(0,5):
+for i in range(0,9):
     lab = QtGui.QLabel(frame1)
     lab.setObjectName("forecast"+str(i))
     lab.setStyleSheet("QWidget { background-color: transparent; color: "+Config.textcolor+"; font-size: "+str(int(20*xscale))+"px; "+Config.fontattr+"}")
